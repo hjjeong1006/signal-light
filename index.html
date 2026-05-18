@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Square+Round:wght@400;700;800&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Nanum Square Round', sans-serif; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Nanum Square Round', sans-serif; letter-spacing: -0.03em; }
 
   :root {
     --bg: #ffffff;
@@ -22,7 +22,7 @@
     --radius-btn: 16px;
     --radius-tab: 10px;
     --tab-active-bg: #FFFFFF;
-    --tab-bar-bg: #ECEAE3;
+    --tab-bar-bg: #e9e9e9;
 
     --green-bg: #EAF3DE; --green-border: #97C459; --green-text: #27500A;
     --amber-bg: #FAEEDA; --amber-border: #EF9F27; --amber-text: #633806;
@@ -64,6 +64,7 @@
     display: flex;
     gap: 4px;
     background: var(--tab-bar-bg);
+    border: 1px solid #dcdcdc;
     border-radius: 14px;
     padding: 4px;
   }
@@ -77,7 +78,7 @@
     font-family: 'Nanum Square Round', sans-serif;
     font-size: 20px;
     font-weight: 700;
-    color: var(--text-secondary);
+    color: #888888;
     cursor: pointer;
     transition: background 0.18s, color 0.18s, box-shadow 0.18s;
     text-align: center;
@@ -112,7 +113,8 @@
   .display-card.c-blue   { background: var(--blue-bg);   border-color: var(--blue-border); }
   .display-card.c-teal   { background: var(--teal-bg);   border-color: var(--teal-border); }
 
-  .d-icon { font-size: 64px; line-height: 1; }
+  .d-icon { font-size: 64px; line-height: 1; display: flex; align-items: center; justify-content: center; }
+  .d-icon img { width: 380px; height: 380px; object-fit: contain; display: block; }
   .d-icon.pop { animation: pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
   @keyframes pop {
     0%   { transform: scale(0.75); }
@@ -160,9 +162,10 @@
     -webkit-user-select: none;
     touch-action: manipulation;
   }
-  .sig-btn:active { transform: scale(0.92) !important; }
+  .sig-btn:active { opacity: 0.75; }
 
-  .sig-btn .ico { font-size: 36px; line-height: 1; }
+  .sig-btn .ico { font-size: 36px; line-height: 1; display: flex; align-items: center; justify-content: center; }
+  .sig-btn .ico img { width: 44px; height: 44px; object-fit: contain; display: block; }
   .sig-btn .lbl {
     font-family: 'Nanum Square Round', sans-serif;
     font-size: 20px;
@@ -185,15 +188,20 @@
   .sig-btn.time .lbl    { color: var(--amber-text); }
   .sig-btn.help     { background: var(--red-bg);    border-color: var(--red-border); }
   .sig-btn.help .lbl    { color: var(--red-text); }
+  .sig-btn.correct  { background: var(--green-bg);  border-color: var(--green-border); }
+  .sig-btn.correct .lbl { color: var(--green-text); }
+  .sig-btn.wrong    { background: var(--red-bg);    border-color: var(--red-border); }
+  .sig-btn.wrong .lbl   { color: var(--red-text); }
 
-  /* Selected state */
-  .sig-btn.selected { transform: scale(1.04); border-width: 2px; }
-  .sig-btn.agree.selected    { box-shadow: 0 0 0 3px var(--green-border); }
-  .sig-btn.neutral.selected  { box-shadow: 0 0 0 3px var(--amber-border); }
-  .sig-btn.disagree.selected { box-shadow: 0 0 0 3px var(--red-border); }
-  .sig-btn.done.selected     { box-shadow: 0 0 0 3px var(--teal-border); }
-  .sig-btn.time.selected     { box-shadow: 0 0 0 3px var(--amber-border); }
-  .sig-btn.help.selected     { box-shadow: 0 0 0 3px var(--red-border); }
+  /* Selected state — inset border, no size change */
+  .sig-btn.agree.selected    { box-shadow: inset 0 0 0 2px var(--green-border), 0px 1px 2px rgba(0,0,0,.1019607843); }
+  .sig-btn.neutral.selected  { box-shadow: inset 0 0 0 2px var(--amber-border), 0px 1px 2px rgba(0,0,0,.1019607843); }
+  .sig-btn.disagree.selected { box-shadow: inset 0 0 0 2px var(--red-border),   0px 1px 2px rgba(0,0,0,.1019607843); }
+  .sig-btn.done.selected     { box-shadow: inset 0 0 0 2px var(--teal-border),  0px 1px 2px rgba(0,0,0,.1019607843); }
+  .sig-btn.time.selected     { box-shadow: inset 0 0 0 2px var(--amber-border), 0px 1px 2px rgba(0,0,0,.1019607843); }
+  .sig-btn.help.selected     { box-shadow: inset 0 0 0 2px var(--red-border),   0px 1px 2px rgba(0,0,0,.1019607843); }
+  .sig-btn.correct.selected  { box-shadow: inset 0 0 0 2px var(--green-border), 0px 1px 2px rgba(0,0,0,.1019607843); }
+  .sig-btn.wrong.selected    { box-shadow: inset 0 0 0 2px var(--red-border),   0px 1px 2px rgba(0,0,0,.1019607843); }
 
   /* Check badge */
   .check-badge {
@@ -218,6 +226,8 @@
   .done     .check-badge { background: var(--teal-border); }
   .time     .check-badge { background: var(--amber-border); }
   .help     .check-badge { background: var(--red-border); }
+  .correct  .check-badge { background: var(--green-border); }
+  .wrong    .check-badge { background: var(--red-border); }
 
   /* --- Reset button --- */
   .reset-btn {
@@ -237,7 +247,42 @@
     transition: background 0.12s;
   }
   .reset-btn:hover { background: var(--border); }
-  .reset-btn svg { width: 14px; height: 14px; opacity: 0.6; }
+  .reset-btn img { width: 20px; height: 20px; opacity: 0.6; }
+
+  /* --- Dev toggle (임시) --- */
+  #dev-toggle {
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1.5px dashed #aaaaaa;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(6px);
+    font-size: 13px;
+    font-weight: 700;
+    color: #666;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  #dev-toggle:hover { background: #f0f0f0; }
+  #dev-toggle .badge {
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: #e0e0e0;
+    font-size: 12px;
+    font-weight: 800;
+    color: #333;
+    transition: background 0.2s, color 0.2s;
+  }
+  #dev-toggle.is-3d .badge {
+    background: #1A1A18;
+    color: #ffffff;
+  }
 </style>
 </head>
 <body>
@@ -253,24 +298,50 @@
   <div id="panels"></div>
 
   <button class="reset-btn" onclick="resetCurrent()">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>
-    </svg>
-    초기화
+    <img src="icon/ico_reset.svg" alt="">
+    초기화하기
   </button>
 
 </div>
+
+<button id="dev-toggle" onclick="toggleIconSet()">
+  아이콘 <span class="badge">2D</span>
+</button>
+
 <script>
+const ICON_SETS = {
+  '2D': {
+    agree:    'icon/2D/ico_찬성.png',
+    neutral:  'icon/2D/ico_중립.png',
+    disagree: 'icon/2D/ico_반대.png',
+    done:     'icon/2D/ico_다했어요.png',
+    time:     'icon/2D/ico_시간이필요해요.png',
+    help:     'icon/2D/제목-없음-1.png',
+    correct:  'icon/2D/ico_O.png',
+    wrong:    'icon/2D/ico_x.png',
+  },
+  '3D': {
+    agree:    'icon/3D/ico_찬성_3d.png',
+    neutral:  'icon/3D/ico_중립_3d.png',
+    disagree: 'icon/3D/ico_반대_3d.png',
+    done:     'icon/3D/ico_다했어요_3d.png',
+    time:     'icon/3D/ico_시간이필요해요_3d.png',
+    help:     'icon/3D/ico_도움이필요해요_3d.png',
+    correct:  'icon/3D/ico_O_3d.png',
+    wrong:    'icon/3D/ico_x_3d.png',
+  },
+};
+let currentIconSet = '2D';
+
 const SIGNALS = {
-  agree:    { icon:'👍', text:'찬성',            color:'c-green', cls:'agree'    },
-  neutral:  { icon:'🤔', text:'중립',            color:'c-amber', cls:'neutral'  },
-  disagree: { icon:'👎', text:'반대',            color:'c-red',   cls:'disagree' },
-  done:     { icon:'✅', text:'다 했어요',       color:'c-teal',  cls:'done'     },
-  time:     { icon:'⏳', text:'시간이 필요해요', color:'c-amber', cls:'time'     },
-  help:     { icon:'🆘', text:'도움이 필요해요', color:'c-red',   cls:'help'     },
-  // OX 퀴즈 신호 (탭 추가 시 주석 해제)
-  // correct: { icon:'⭕', text:'맞아요',  color:'c-green', cls:'correct' },
-  // wrong:   { icon:'❌', text:'틀려요',  color:'c-red',   cls:'wrong'   },
+  agree:    { img:'icon/2D/ico_찬성.png',          text:'찬성',            color:'c-green', cls:'agree'    },
+  neutral:  { img:'icon/2D/ico_중립.png',           text:'중립',            color:'c-amber', cls:'neutral'  },
+  disagree: { img:'icon/2D/ico_반대.png',           text:'반대',            color:'c-red',   cls:'disagree' },
+  done:     { img:'icon/2D/ico_다했어요.png',       text:'다 했어요',       color:'c-teal',  cls:'done'     },
+  time:     { img:'icon/2D/ico_시간이필요해요.png', text:'시간이 필요해요', color:'c-amber', cls:'time'     },
+  help:     { img:'icon/2D/제목-없음-1.png',        text:'도움이 필요해요', color:'c-red',   cls:'help'     },
+  correct:  { img:'icon/2D/ico_O.png',             text:'O',              color:'c-green', cls:'correct'  },
+  wrong:    { img:'icon/2D/ico_x.png',             text:'X',              color:'c-red',   cls:'wrong'    },
 };
 
 // 여기에 항목을 추가하면 탭과 패널이 자동 생성됩니다
@@ -291,15 +362,14 @@ const TABS = [
     layout: 'col-3',
     buttons: ['done', 'time', 'help'],
   },
-  // OX 퀴즈 탭 추가 예시:
-  // {
-  //   id: 'quiz',
-  //   label: 'OX 퀴즈',
-  //   defaultIcon: '❓',
-  //   defaultText: '답을 선택하세요',
-  //   layout: 'col-2',
-  //   buttons: ['correct', 'wrong'],
-  // },
+  {
+    id: 'quiz',
+    label: 'OX',
+    defaultIcon: '❓',
+    defaultText: 'OX중 선택하세요',
+    layout: 'col-2',
+    buttons: ['correct', 'wrong'],
+  },
 ];
 
 let currentTabId = TABS[0].id;
@@ -332,7 +402,7 @@ const tabSelections = Object.fromEntries(TABS.map(t => [t.id, null]));
       btn.dataset.key = key;
       btn.innerHTML =
         '<span class="check-badge">✓</span>' +
-        '<span class="ico">' + s.icon + '</span>' +
+        '<span class="ico"><img src="' + s.img + '" alt=""></span>' +
         '<span class="lbl">' + s.text + '</span>';
       btn.onclick = () => pick(btn);
       grid.appendChild(btn);
@@ -392,16 +462,39 @@ function updateDisplay() {
   if (key) {
     const s = SIGNALS[key];
     display.className = 'display-card ' + s.color;
-    iconEl.textContent = s.icon;
+    iconEl.innerHTML = '<img src="' + s.img + '" alt="">';
     iconEl.classList.remove('pop');
     void iconEl.offsetWidth;
     iconEl.classList.add('pop');
     textEl.textContent = s.text;
   } else {
     display.className = 'display-card';
-    iconEl.textContent = tab.defaultIcon;
+    iconEl.innerHTML = tab.defaultIcon;
     textEl.textContent = tab.defaultText;
   }
+}
+
+function toggleIconSet() {
+  currentIconSet = currentIconSet === '2D' ? '3D' : '2D';
+  const set = ICON_SETS[currentIconSet];
+
+  // SIGNALS 경로 업데이트
+  Object.keys(set).forEach(key => { SIGNALS[key].img = set[key]; });
+
+  // 버튼 이미지 업데이트
+  document.querySelectorAll('.sig-btn').forEach(btn => {
+    const img = btn.querySelector('.ico img');
+    if (img) img.src = set[btn.dataset.key];
+  });
+
+  // 디스플레이 카드 이미지 업데이트
+  const displayImg = document.querySelector('#d-icon img');
+  if (displayImg) displayImg.src = set[tabSelections[currentTabId]];
+
+  // 버튼 라벨 및 스타일 업데이트
+  const toggleBtn = document.getElementById('dev-toggle');
+  toggleBtn.querySelector('.badge').textContent = currentIconSet;
+  toggleBtn.classList.toggle('is-3d', currentIconSet === '3D');
 }
 
 function resetCurrent() {
