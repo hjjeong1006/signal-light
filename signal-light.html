@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>신호등 — 학생용 의사표현 도구</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #F7F6F2;
+    --surface: #FFFFFF;
+    --border: rgba(0,0,0,0.08);
+    --border-strong: rgba(0,0,0,0.14);
+    --text-primary: #1A1A18;
+    --text-secondary: #6B6A65;
+    --text-hint: #A8A79F;
+    --radius-card: 20px;
+    --radius-btn: 16px;
+    --radius-tab: 10px;
+    --tab-active-bg: #FFFFFF;
+    --tab-bar-bg: #ECEAE3;
+
+    --green-bg: #EAF3DE; --green-border: #97C459; --green-text: #27500A;
+    --amber-bg: #FAEEDA; --amber-border: #EF9F27; --amber-text: #633806;
+    --red-bg:   #FCEBEB; --red-border:   #F09595; --red-text:   #791F1F;
+    --blue-bg:  #E6F1FB; --blue-border:  #85B7EB; --blue-text:  #0C447C;
+    --teal-bg:  #E1F5EE; --teal-border:  #5DCAA5; --teal-text:  #085041;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1A1A18;
+      --surface: #242422;
+      --border: rgba(255,255,255,0.08);
+      --border-strong: rgba(255,255,255,0.14);
+      --text-primary: #F0EFE8;
+      --text-secondary: #9A9990;
+      --text-hint: #6A6960;
+      --tab-active-bg: #333330;
+      --tab-bar-bg: #2A2A28;
+
+      --green-bg: #1E2E12; --green-border: #4A7A18; --green-text: #C0DD97;
+      --amber-bg: #2E2010; --amber-border: #A06010; --amber-text: #FAC775;
+      --red-bg:   #2E1212; --red-border:   #A03030; --red-text:   #F7C1C1;
+      --blue-bg:  #0E1E30; --blue-border:  #2A5A90; --blue-text:  #B5D4F4;
+      --teal-bg:  #0C2820; --teal-border:  #1A7055; --teal-text:  #9FE1CB;
+    }
+  }
+
+  html, body {
+    height: 100%;
+    background: var(--bg);
+    font-family: 'Noto Sans KR', sans-serif;
+    color: var(--text-primary);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 1.5rem 1rem 2.5rem;
+  }
+
+  #app {
+    width: 100%;
+    max-width: 420px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  /* --- Tab bar --- */
+  .tab-bar {
+    display: flex;
+    gap: 4px;
+    background: var(--tab-bar-bg);
+    border-radius: 14px;
+    padding: 4px;
+  }
+
+  .tab {
+    flex: 1;
+    padding: 9px 4px;
+    border: none;
+    border-radius: var(--radius-tab);
+    background: transparent;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+    text-align: center;
+    line-height: 1.35;
+    white-space: nowrap;
+  }
+  .tab.active {
+    background: var(--tab-active-bg);
+    color: var(--text-primary);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.10);
+  }
+
+  /* --- Display card --- */
+  .display-card {
+    border-radius: var(--radius-card);
+    border: 1.5px solid var(--border);
+    background: var(--surface);
+    padding: 2.5rem 1.5rem 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 200px;
+    transition: background 0.3s, border-color 0.3s;
+  }
+
+  .display-card.c-green  { background: var(--green-bg);  border-color: var(--green-border); }
+  .display-card.c-amber  { background: var(--amber-bg);  border-color: var(--amber-border); }
+  .display-card.c-red    { background: var(--red-bg);    border-color: var(--red-border); }
+  .display-card.c-blue   { background: var(--blue-bg);   border-color: var(--blue-border); }
+  .display-card.c-teal   { background: var(--teal-bg);   border-color: var(--teal-border); }
+
+  .d-icon { font-size: 64px; line-height: 1; }
+  .d-icon.pop { animation: pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+  @keyframes pop {
+    0%   { transform: scale(0.75); }
+    100% { transform: scale(1); }
+  }
+
+  .d-text {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  /* --- Panels --- */
+  .panel { display: none; flex-direction: column; gap: 10px; }
+  .panel.active {
+    display: flex;
+    animation: fadeUp 0.2s ease;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* --- Button grid --- */
+  .btn-grid { display: grid; gap: 10px; }
+  .col-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .col-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+  /* --- Signal buttons --- */
+  .sig-btn {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 22px 8px 18px;
+    border-radius: var(--radius-btn);
+    border: 1.5px solid var(--border);
+    cursor: pointer;
+    background: var(--surface);
+    transition: transform 0.13s, box-shadow 0.13s, border-color 0.13s, border-width 0.13s;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+  }
+  .sig-btn:active { transform: scale(0.92) !important; }
+
+  .sig-btn .ico { font-size: 36px; line-height: 1; }
+  .sig-btn .lbl {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+    line-height: 1.3;
+    text-align: center;
+  }
+
+  /* Color variants */
+  .sig-btn.agree    { background: var(--green-bg);  border-color: var(--green-border); }
+  .sig-btn.agree .lbl  { color: var(--green-text); }
+  .sig-btn.neutral  { background: var(--amber-bg);  border-color: var(--amber-border); }
+  .sig-btn.neutral .lbl { color: var(--amber-text); }
+  .sig-btn.disagree { background: var(--red-bg);    border-color: var(--red-border); }
+  .sig-btn.disagree .lbl { color: var(--red-text); }
+  .sig-btn.done     { background: var(--teal-bg);   border-color: var(--teal-border); }
+  .sig-btn.done .lbl    { color: var(--teal-text); }
+  .sig-btn.time     { background: var(--amber-bg);  border-color: var(--amber-border); }
+  .sig-btn.time .lbl    { color: var(--amber-text); }
+  .sig-btn.help     { background: var(--red-bg);    border-color: var(--red-border); }
+  .sig-btn.help .lbl    { color: var(--red-text); }
+  .sig-btn.question { background: var(--blue-bg);   border-color: var(--blue-border); }
+  .sig-btn.question .lbl { color: var(--blue-text); }
+
+  /* Selected state — color-matched glow */
+  .sig-btn.selected { transform: scale(1.04); border-width: 2px; }
+  .sig-btn.agree.selected    { box-shadow: 0 0 0 3px var(--green-border); }
+  .sig-btn.neutral.selected  { box-shadow: 0 0 0 3px var(--amber-border); }
+  .sig-btn.disagree.selected { box-shadow: 0 0 0 3px var(--red-border); }
+  .sig-btn.done.selected     { box-shadow: 0 0 0 3px var(--teal-border); }
+  .sig-btn.time.selected     { box-shadow: 0 0 0 3px var(--amber-border); }
+  .sig-btn.help.selected     { box-shadow: 0 0 0 3px var(--red-border); }
+  .sig-btn.question.selected { box-shadow: 0 0 0 3px var(--blue-border); }
+
+  /* Check badge */
+  .check-badge {
+    position: absolute;
+    top: 8px; right: 8px;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-style: normal;
+    color: #fff;
+    opacity: 0;
+    transform: scale(0);
+    transition: opacity 0.15s, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    pointer-events: none;
+  }
+  .sig-btn.selected .check-badge { opacity: 1; transform: scale(1); }
+  .agree    .check-badge { background: var(--green-border); }
+  .neutral  .check-badge { background: var(--amber-border); }
+  .disagree .check-badge { background: var(--red-border); }
+  .done     .check-badge { background: var(--teal-border); }
+  .time     .check-badge { background: var(--amber-border); }
+  .help     .check-badge { background: var(--red-border); }
+  .question .check-badge { background: var(--blue-border); }
+
+  /* --- Reset button --- */
+  .reset-btn {
+    width: 100%;
+    padding: 11px;
+    border-radius: 12px;
+    border: 1px solid var(--border-strong);
+    background: transparent;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 13px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: background 0.12s;
+  }
+  .reset-btn:hover { background: var(--border); }
+  .reset-btn svg { width: 14px; height: 14px; opacity: 0.6; }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <div class="tab-bar" id="tab-bar" role="tablist"></div>
+
+  <div class="display-card" id="display">
+    <div class="d-icon" id="d-icon">💬</div>
+    <div class="d-text" id="d-text">선택해 주세요</div>
+  </div>
+
+  <div id="panels"></div>
+
+  <button class="reset-btn" onclick="resetCurrent()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>
+    </svg>
+    초기화
+  </button>
+
+</div>
+<script>
+// ── 신호 정의 ───────────────────────────────────────────────────────────────
+const SIGNALS = {
+  agree:    { icon:'👍', text:'찬성',            hint:'의견을 표시했어요',  color:'c-green', cls:'agree'    },
+  neutral:  { icon:'🤔', text:'중립',            hint:'의견을 표시했어요',  color:'c-amber', cls:'neutral'  },
+  disagree: { icon:'👎', text:'반대',            hint:'의견을 표시했어요',  color:'c-red',   cls:'disagree' },
+  done:     { icon:'✅', text:'다 했어요',       hint:'선생님께 알렸어요',  color:'c-teal',  cls:'done'     },
+  time:     { icon:'⏳', text:'시간이 필요해요', hint:'선생님께 알렸어요',  color:'c-amber', cls:'time'     },
+  help:     { icon:'🆘', text:'도움이 필요해요', hint:'선생님께 알렸어요',  color:'c-red',   cls:'help'     },
+  question: { icon:'❓', text:'질문 있어요',     hint:'선생님께 알렸어요',  color:'c-blue',  cls:'question' },
+  // OX 퀴즈 신호 (탭 추가 시 주석 해제)
+  // correct:  { icon:'⭕', text:'맞아요',         hint:'정답을 선택했어요',  color:'c-green', cls:'correct'  },
+  // wrong:    { icon:'❌', text:'틀려요',         hint:'오답을 선택했어요',  color:'c-red',   cls:'wrong'    },
+};
+
+// ── 탭 정의 — 여기에 항목을 추가하면 탭과 패널이 자동 생성됩니다 ───────────
+const TABS = [
+  {
+    id: 'opinion',
+    icon: '💬',
+    label: '의견 표시',
+    defaultIcon: '💬',
+    defaultText: '의견을 선택하세요',
+    layout: 'col-3',
+    buttons: ['agree', 'neutral', 'disagree'],
+  },
+  {
+    id: 'status',
+    icon: '🙋',
+    label: '학습 상태',
+    defaultIcon: '🙋',
+    defaultText: '학습 상태를 선택하세요',
+    layout: 'col-3',
+    buttons: ['done', 'time', 'help'],
+  },
+  // OX 퀴즈 탭 추가 예시:
+  // {
+  //   id: 'quiz',
+  //   icon: '❓',
+  //   label: 'OX 퀴즈',
+  //   defaultIcon: '❓',
+  //   defaultText: '답을 선택하세요',
+  //   layout: 'col-2',
+  //   buttons: ['correct', 'wrong'],
+  // },
+];
+
+// ── 상태 ─────────────────────────────────────────────────────────────────────
+let currentTabId = TABS[0].id;
+const tabSelections = Object.fromEntries(TABS.map(t => [t.id, null]));
+
+// ── 초기화 ───────────────────────────────────────────────────────────────────
+(function init() {
+  const tabBar = document.getElementById('tab-bar');
+  const panelsEl = document.getElementById('panels');
+
+  TABS.forEach(tab => {
+    // 탭 버튼
+    const tabBtn = document.createElement('button');
+    tabBtn.className = 'tab' + (tab.id === currentTabId ? ' active' : '');
+    tabBtn.setAttribute('role', 'tab');
+    tabBtn.dataset.tabId = tab.id;
+    tabBtn.textContent = tab.icon + ' ' + tab.label;
+    tabBtn.onclick = () => switchTab(tab.id);
+    tabBar.appendChild(tabBtn);
+
+    // 패널
+    const panel = document.createElement('div');
+    panel.className = 'panel' + (tab.id === currentTabId ? ' active' : '');
+    panel.id = 'panel-' + tab.id;
+
+    const grid = document.createElement('div');
+    grid.className = 'btn-grid ' + tab.layout;
+
+    tab.buttons.forEach(key => {
+      const s = SIGNALS[key];
+      const btn = document.createElement('button');
+      btn.className = 'sig-btn ' + s.cls;
+      btn.dataset.key = key;
+      btn.innerHTML =
+        '<span class="check-badge">✓</span>' +
+        '<span class="ico">' + s.icon + '</span>' +
+        '<span class="lbl">' + s.text + '</span>';
+      btn.onclick = () => pick(btn);
+      grid.appendChild(btn);
+    });
+
+    panel.appendChild(grid);
+    panelsEl.appendChild(panel);
+  });
+
+  updateDisplay();
+})();
+
+// ── 탭 전환 ──────────────────────────────────────────────────────────────────
+function switchTab(tabId) {
+  currentTabId = tabId;
+
+  document.querySelectorAll('.tab').forEach(t =>
+    t.classList.toggle('active', t.dataset.tabId === tabId)
+  );
+
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + tabId).classList.add('active');
+
+  // 이 탭의 이전 선택 복원
+  const savedKey = tabSelections[tabId];
+  document.querySelectorAll('.sig-btn').forEach(b => b.classList.remove('selected'));
+  if (savedKey) {
+    const saved = document.querySelector('#panel-' + tabId + ' [data-key="' + savedKey + '"]');
+    if (saved) saved.classList.add('selected');
+  }
+
+  updateDisplay();
+}
+
+// ── 버튼 선택 ────────────────────────────────────────────────────────────────
+function pick(btn) {
+  const key = btn.dataset.key;
+  const isToggleOff = tabSelections[currentTabId] === key;
+
+  document.querySelectorAll('#panel-' + currentTabId + ' .sig-btn')
+    .forEach(b => b.classList.remove('selected'));
+
+  if (isToggleOff) {
+    tabSelections[currentTabId] = null;
+  } else {
+    tabSelections[currentTabId] = key;
+    btn.classList.add('selected');
+  }
+
+  updateDisplay();
+}
+
+// ── 디스플레이 갱신 ───────────────────────────────────────────────────────────
+function updateDisplay() {
+  const tab = TABS.find(t => t.id === currentTabId);
+  const key = tabSelections[currentTabId];
+  const display = document.getElementById('display');
+  const iconEl  = document.getElementById('d-icon');
+  const textEl  = document.getElementById('d-text');
+
+  if (key) {
+    const s = SIGNALS[key];
+    display.className = 'display-card ' + s.color;
+    iconEl.textContent = s.icon;
+    iconEl.classList.remove('pop');
+    void iconEl.offsetWidth;
+    iconEl.classList.add('pop');
+    textEl.textContent = s.text;
+  } else {
+    display.className = 'display-card';
+    iconEl.textContent = tab.defaultIcon;
+    textEl.textContent = tab.defaultText;
+  }
+}
+
+// ── 현재 탭 초기화 ───────────────────────────────────────────────────────────
+function resetCurrent() {
+  tabSelections[currentTabId] = null;
+  document.querySelectorAll('#panel-' + currentTabId + ' .sig-btn')
+    .forEach(b => b.classList.remove('selected'));
+  updateDisplay();
+}
+
+</script>
+</body>
+</html>
