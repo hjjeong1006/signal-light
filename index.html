@@ -5,15 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>신호등 — 학생용 의사표현 도구</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Square+Round:wght@400;700;800&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Nanum Square Round', sans-serif; }
 
   :root {
-    --bg: #F7F6F2;
+    --bg: #ffffff;
     --surface: #FFFFFF;
-    --border: rgba(0,0,0,0.08);
-    --border-strong: rgba(0,0,0,0.14);
+    --border: #dcdcdc;
+    --border-strong: #dcdcdc;
     --text-primary: #1A1A18;
     --text-secondary: #6B6A65;
     --text-hint: #A8A79F;
@@ -30,45 +31,29 @@
     --teal-bg:  #E1F5EE; --teal-border:  #5DCAA5; --teal-text:  #085041;
   }
 
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #1A1A18;
-      --surface: #242422;
-      --border: rgba(255,255,255,0.08);
-      --border-strong: rgba(255,255,255,0.14);
-      --text-primary: #F0EFE8;
-      --text-secondary: #9A9990;
-      --text-hint: #6A6960;
-      --tab-active-bg: #333330;
-      --tab-bar-bg: #2A2A28;
-
-      --green-bg: #1E2E12; --green-border: #4A7A18; --green-text: #C0DD97;
-      --amber-bg: #2E2010; --amber-border: #A06010; --amber-text: #FAC775;
-      --red-bg:   #2E1212; --red-border:   #A03030; --red-text:   #F7C1C1;
-      --blue-bg:  #0E1E30; --blue-border:  #2A5A90; --blue-text:  #B5D4F4;
-      --teal-bg:  #0C2820; --teal-border:  #1A7055; --teal-text:  #9FE1CB;
-    }
-  }
-
   html, body {
     height: 100%;
-    background: var(--bg);
-    font-family: 'Noto Sans KR', sans-serif;
+    background: #ffffff;
+    font-family: 'Nanum Square Round', sans-serif;
     color: var(--text-primary);
     -webkit-tap-highlight-color: transparent;
+    overflow: hidden;
   }
 
   body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    min-height: 100vh;
-    padding: 1.5rem 1rem 2.5rem;
+    height: 100vh;
+    height: 100dvh;
+    padding: 1.5rem 1rem 1.5rem;
   }
 
   #app {
     width: 100%;
-    max-width: 420px;
+    max-width: 1000px;
+    flex: 1;
+    min-height: 0;
     display: flex;
     flex-direction: column;
     gap: 14px;
@@ -89,9 +74,9 @@
     border: none;
     border-radius: var(--radius-tab);
     background: transparent;
-    font-family: 'Noto Sans KR', sans-serif;
-    font-size: 12px;
-    font-weight: 500;
+    font-family: 'Nanum Square Round', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
     color: var(--text-secondary);
     cursor: pointer;
     transition: background 0.18s, color 0.18s, box-shadow 0.18s;
@@ -116,7 +101,8 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
-    min-height: 200px;
+    flex: 1;
+    min-height: 0;
     transition: background 0.3s, border-color 0.3s;
   }
 
@@ -134,7 +120,7 @@
   }
 
   .d-text {
-    font-size: 22px;
+    font-size: 26px;
     font-weight: 700;
     color: var(--text-primary);
   }
@@ -168,6 +154,7 @@
     border: 1.5px solid var(--border);
     cursor: pointer;
     background: var(--surface);
+    box-shadow: 0px 1px 2px rgba(0,0,0,.1019607843);
     transition: transform 0.13s, box-shadow 0.13s, border-color 0.13s, border-width 0.13s;
     user-select: none;
     -webkit-user-select: none;
@@ -177,9 +164,9 @@
 
   .sig-btn .ico { font-size: 36px; line-height: 1; }
   .sig-btn .lbl {
-    font-family: 'Noto Sans KR', sans-serif;
-    font-size: 13px;
-    font-weight: 500;
+    font-family: 'Nanum Square Round', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
     color: var(--text-primary);
     line-height: 1.3;
     text-align: center;
@@ -198,10 +185,8 @@
   .sig-btn.time .lbl    { color: var(--amber-text); }
   .sig-btn.help     { background: var(--red-bg);    border-color: var(--red-border); }
   .sig-btn.help .lbl    { color: var(--red-text); }
-  .sig-btn.question { background: var(--blue-bg);   border-color: var(--blue-border); }
-  .sig-btn.question .lbl { color: var(--blue-text); }
 
-  /* Selected state — color-matched glow */
+  /* Selected state */
   .sig-btn.selected { transform: scale(1.04); border-width: 2px; }
   .sig-btn.agree.selected    { box-shadow: 0 0 0 3px var(--green-border); }
   .sig-btn.neutral.selected  { box-shadow: 0 0 0 3px var(--amber-border); }
@@ -209,7 +194,6 @@
   .sig-btn.done.selected     { box-shadow: 0 0 0 3px var(--teal-border); }
   .sig-btn.time.selected     { box-shadow: 0 0 0 3px var(--amber-border); }
   .sig-btn.help.selected     { box-shadow: 0 0 0 3px var(--red-border); }
-  .sig-btn.question.selected { box-shadow: 0 0 0 3px var(--blue-border); }
 
   /* Check badge */
   .check-badge {
@@ -221,7 +205,6 @@
     align-items: center;
     justify-content: center;
     font-size: 10px;
-    font-style: normal;
     color: #fff;
     opacity: 0;
     transform: scale(0);
@@ -235,7 +218,6 @@
   .done     .check-badge { background: var(--teal-border); }
   .time     .check-badge { background: var(--amber-border); }
   .help     .check-badge { background: var(--red-border); }
-  .question .check-badge { background: var(--blue-border); }
 
   /* --- Reset button --- */
   .reset-btn {
@@ -244,8 +226,8 @@
     border-radius: 12px;
     border: 1px solid var(--border-strong);
     background: transparent;
-    font-family: 'Noto Sans KR', sans-serif;
-    font-size: 13px;
+    font-family: 'Nanum Square Round', sans-serif;
+    font-size: 20px;
     color: var(--text-secondary);
     cursor: pointer;
     display: flex;
@@ -279,25 +261,22 @@
 
 </div>
 <script>
-// ── 신호 정의 ───────────────────────────────────────────────────────────────
 const SIGNALS = {
-  agree:    { icon:'👍', text:'찬성',            hint:'의견을 표시했어요',  color:'c-green', cls:'agree'    },
-  neutral:  { icon:'🤔', text:'중립',            hint:'의견을 표시했어요',  color:'c-amber', cls:'neutral'  },
-  disagree: { icon:'👎', text:'반대',            hint:'의견을 표시했어요',  color:'c-red',   cls:'disagree' },
-  done:     { icon:'✅', text:'다 했어요',       hint:'선생님께 알렸어요',  color:'c-teal',  cls:'done'     },
-  time:     { icon:'⏳', text:'시간이 필요해요', hint:'선생님께 알렸어요',  color:'c-amber', cls:'time'     },
-  help:     { icon:'🆘', text:'도움이 필요해요', hint:'선생님께 알렸어요',  color:'c-red',   cls:'help'     },
-  question: { icon:'❓', text:'질문 있어요',     hint:'선생님께 알렸어요',  color:'c-blue',  cls:'question' },
+  agree:    { icon:'👍', text:'찬성',            color:'c-green', cls:'agree'    },
+  neutral:  { icon:'🤔', text:'중립',            color:'c-amber', cls:'neutral'  },
+  disagree: { icon:'👎', text:'반대',            color:'c-red',   cls:'disagree' },
+  done:     { icon:'✅', text:'다 했어요',       color:'c-teal',  cls:'done'     },
+  time:     { icon:'⏳', text:'시간이 필요해요', color:'c-amber', cls:'time'     },
+  help:     { icon:'🆘', text:'도움이 필요해요', color:'c-red',   cls:'help'     },
   // OX 퀴즈 신호 (탭 추가 시 주석 해제)
-  // correct:  { icon:'⭕', text:'맞아요',         hint:'정답을 선택했어요',  color:'c-green', cls:'correct'  },
-  // wrong:    { icon:'❌', text:'틀려요',         hint:'오답을 선택했어요',  color:'c-red',   cls:'wrong'    },
+  // correct: { icon:'⭕', text:'맞아요',  color:'c-green', cls:'correct' },
+  // wrong:   { icon:'❌', text:'틀려요',  color:'c-red',   cls:'wrong'   },
 };
 
-// ── 탭 정의 — 여기에 항목을 추가하면 탭과 패널이 자동 생성됩니다 ───────────
+// 여기에 항목을 추가하면 탭과 패널이 자동 생성됩니다
 const TABS = [
   {
     id: 'opinion',
-    icon: '💬',
     label: '의견 표시',
     defaultIcon: '💬',
     defaultText: '의견을 선택하세요',
@@ -306,7 +285,6 @@ const TABS = [
   },
   {
     id: 'status',
-    icon: '🙋',
     label: '학습 상태',
     defaultIcon: '🙋',
     defaultText: '학습 상태를 선택하세요',
@@ -316,7 +294,6 @@ const TABS = [
   // OX 퀴즈 탭 추가 예시:
   // {
   //   id: 'quiz',
-  //   icon: '❓',
   //   label: 'OX 퀴즈',
   //   defaultIcon: '❓',
   //   defaultText: '답을 선택하세요',
@@ -325,26 +302,22 @@ const TABS = [
   // },
 ];
 
-// ── 상태 ─────────────────────────────────────────────────────────────────────
 let currentTabId = TABS[0].id;
 const tabSelections = Object.fromEntries(TABS.map(t => [t.id, null]));
 
-// ── 초기화 ───────────────────────────────────────────────────────────────────
 (function init() {
   const tabBar = document.getElementById('tab-bar');
   const panelsEl = document.getElementById('panels');
 
   TABS.forEach(tab => {
-    // 탭 버튼
     const tabBtn = document.createElement('button');
     tabBtn.className = 'tab' + (tab.id === currentTabId ? ' active' : '');
     tabBtn.setAttribute('role', 'tab');
     tabBtn.dataset.tabId = tab.id;
-    tabBtn.textContent = tab.icon + ' ' + tab.label;
+    tabBtn.textContent = tab.label;
     tabBtn.onclick = () => switchTab(tab.id);
     tabBar.appendChild(tabBtn);
 
-    // 패널
     const panel = document.createElement('div');
     panel.className = 'panel' + (tab.id === currentTabId ? ' active' : '');
     panel.id = 'panel-' + tab.id;
@@ -372,7 +345,6 @@ const tabSelections = Object.fromEntries(TABS.map(t => [t.id, null]));
   updateDisplay();
 })();
 
-// ── 탭 전환 ──────────────────────────────────────────────────────────────────
 function switchTab(tabId) {
   currentTabId = tabId;
 
@@ -383,7 +355,6 @@ function switchTab(tabId) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.getElementById('panel-' + tabId).classList.add('active');
 
-  // 이 탭의 이전 선택 복원
   const savedKey = tabSelections[tabId];
   document.querySelectorAll('.sig-btn').forEach(b => b.classList.remove('selected'));
   if (savedKey) {
@@ -394,7 +365,6 @@ function switchTab(tabId) {
   updateDisplay();
 }
 
-// ── 버튼 선택 ────────────────────────────────────────────────────────────────
 function pick(btn) {
   const key = btn.dataset.key;
   const isToggleOff = tabSelections[currentTabId] === key;
@@ -412,7 +382,6 @@ function pick(btn) {
   updateDisplay();
 }
 
-// ── 디스플레이 갱신 ───────────────────────────────────────────────────────────
 function updateDisplay() {
   const tab = TABS.find(t => t.id === currentTabId);
   const key = tabSelections[currentTabId];
@@ -435,14 +404,12 @@ function updateDisplay() {
   }
 }
 
-// ── 현재 탭 초기화 ───────────────────────────────────────────────────────────
 function resetCurrent() {
   tabSelections[currentTabId] = null;
   document.querySelectorAll('#panel-' + currentTabId + ' .sig-btn')
     .forEach(b => b.classList.remove('selected'));
   updateDisplay();
 }
-
 </script>
 </body>
 </html>
